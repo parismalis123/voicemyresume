@@ -1,0 +1,640 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>VoiceMyResume — Build Your Resume</title>
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500&family=DM+Serif+Display&display=swap" rel="stylesheet">
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:'DM Sans',sans-serif;background:#f7f7f5;color:#1a1a1a;min-height:100vh}
+.topbar{background:#185FA5;padding:10px 2rem;display:flex;align-items:center;justify-content:space-between}
+.logo{font-size:16px;font-weight:500;color:#fff;letter-spacing:-0.02em}
+.logo b{color:#B5D4F4;font-weight:500}
+.topbar-right{font-size:12px;color:#B5D4F4}
+.app{max-width:860px;margin:0 auto;padding:2rem 1.25rem}
+.steps-bar{display:flex;align-items:center;justify-content:center;gap:0;margin-bottom:2rem;background:#fff;border-radius:12px;border:0.5px solid #e5e5e5;padding:4px}
+.step-btn{flex:1;padding:10px;text-align:center;border:none;background:none;cursor:pointer;font-family:'DM Sans',sans-serif;border-radius:10px;transition:all 0.2s}
+.step-btn.active{background:#185FA5;color:#fff}
+.step-btn.done{color:#3B6D11}
+.step-btn.todo{color:#aaa}
+.step-btn-n{font-size:11px;font-weight:500;display:block}
+.step-btn-l{font-size:10px;display:block;margin-top:1px}
+.card{background:#fff;border:0.5px solid #e5e5e5;border-radius:16px;padding:1.75rem;margin-bottom:1.25rem}
+.card-title{font-size:18px;font-weight:500;color:#1a1a1a;margin-bottom:4px}
+.card-sub{font-size:13px;color:#888;line-height:1.6;margin-bottom:1.25rem}
+.ways{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-bottom:1.25rem}
+.way{border:1px solid #eee;border-radius:12px;padding:1.25rem;cursor:pointer;text-align:center;transition:all 0.15s;background:#fff}
+.way:hover{border-color:#185FA5}
+.way.sel{border:2px solid #185FA5;background:#f0f7ff}
+.way-icon{width:44px;height:44px;border-radius:10px;display:flex;align-items:center;justify-content:center;margin:0 auto 10px}
+.way-title{font-size:13px;font-weight:500;color:#1a1a1a;margin-bottom:4px}
+.way-desc{font-size:11px;color:#888;line-height:1.5}
+.mic-wrap{text-align:center;padding:1rem 0}
+.mic{width:80px;height:80px;border-radius:50%;background:#185FA5;border:none;cursor:pointer;display:flex;align-items:center;justify-content:center;margin:0 auto 12px;transition:all 0.2s;box-shadow:0 4px 14px rgba(24,95,165,0.3)}
+.mic:hover{background:#0C447C;transform:scale(1.05)}
+.mic.rec{background:#E24B4A;animation:pulse-mic 1.5s infinite}
+@keyframes pulse-mic{0%,100%{transform:scale(1)}50%{transform:scale(1.08)}}
+.mic-lbl{font-size:13px;color:#888;margin-bottom:6px}
+.mic-hint{font-size:11px;color:#bbb;font-style:italic}
+.transcript-box{background:#f7f7f5;border:0.5px solid #e5e5e5;border-left:3px solid #185FA5;border-radius:8px;padding:14px;font-size:13px;color:#444;line-height:1.7;margin:14px 0;display:none}
+textarea{width:100%;font-family:'DM Sans',sans-serif;font-size:14px;border:1px solid #eee;border-radius:10px;padding:14px;background:#fff;color:#1a1a1a;resize:vertical;line-height:1.7;transition:border-color 0.2s}
+textarea:focus{outline:none;border-color:#185FA5}
+input[type=text],input[type=password]{width:100%;font-family:'DM Sans',sans-serif;font-size:14px;border:1px solid #eee;border-radius:10px;padding:12px;color:#1a1a1a;margin-bottom:10px;background:#fff}
+input[type=text]:focus,input[type=password]:focus{outline:none;border-color:#185FA5}
+.btn-primary{background:#185FA5;color:#fff;border:none;padding:14px 24px;border-radius:10px;font-size:14px;font-weight:500;cursor:pointer;font-family:'DM Sans',sans-serif;width:100%;transition:all 0.2s;margin-top:10px}
+.btn-primary:hover{background:#0C447C}
+.btn-secondary{background:none;border:1px solid #ddd;color:#1a1a1a;padding:12px 24px;border-radius:10px;font-size:14px;cursor:pointer;font-family:'DM Sans',sans-serif;margin-top:8px;width:100%}
+.btn-secondary:hover{background:#f5f5f5}
+.btn-back{background:none;border:none;color:#888;font-size:13px;cursor:pointer;font-family:'DM Sans',sans-serif;padding:8px 0;display:flex;align-items:center;gap:4px;margin-bottom:1rem}
+.ai-loading{text-align:center;padding:2rem}
+.ai-spinner{width:48px;height:48px;border:3px solid #e5e5e5;border-top:3px solid #185FA5;border-radius:50%;animation:spin 1s linear infinite;margin:0 auto 16px}
+@keyframes spin{to{transform:rotate(360deg)}}
+.ai-loading-text{font-size:14px;color:#555;margin-bottom:6px}
+.ai-loading-sub{font-size:12px;color:#aaa}
+.resume-output{background:#fff;border:0.5px solid #e5e5e5;border-radius:12px;padding:2rem;font-size:14px;line-height:1.7;font-family:'DM Sans',sans-serif;color:#1a1a1a;min-height:200px}
+.resume-output h1{font-size:22px;font-weight:500;color:#1a1a1a;margin-bottom:4px;letter-spacing:-0.01em}
+.resume-output h2{font-size:10px;font-weight:500;text-transform:uppercase;letter-spacing:0.12em;color:#185FA5;margin:20px 0 6px;border-bottom:1.5px solid #185FA5;padding-bottom:4px}
+.resume-output h3{font-size:14px;font-weight:500;color:#1a1a1a;margin:12px 0 2px}
+.resume-output p{margin-bottom:6px;color:#333;line-height:1.7}
+.resume-output ul{padding-left:18px;margin-bottom:10px}
+.resume-output ul li{margin-bottom:4px;color:#333;line-height:1.6}
+.resume-output hr{border:none;border-top:0.5px solid #eee;margin:12px 0}
+.resume-output strong{font-weight:500;color:#1a1a1a}
+.resume-header-line{height:4px;background:#185FA5;border-radius:2px;margin-bottom:1.25rem}
+.score-ring{width:80px;height:80px;border-radius:50%;background:#E6F1FB;border:4px solid #185FA5;display:flex;align-items:center;justify-content:center;margin:0 auto 10px}
+.score-num{font-size:22px;font-weight:500;color:#0C447C}
+.encourage{background:#E6F1FB;border-radius:12px;padding:1.25rem;text-align:center;margin-bottom:1.25rem}
+.encourage-emoji{font-size:28px;margin-bottom:8px}
+.encourage-text{font-size:14px;font-weight:500;color:#1a1a1a;margin-bottom:4px}
+.encourage-sub{font-size:13px;color:#555}
+.settings-wrap{background:#fff;border:0.5px solid #e5e5e5;border-radius:12px;padding:1.25rem;margin-bottom:1.25rem}
+.settings-title{font-size:11px;font-weight:500;color:#888;text-transform:uppercase;letter-spacing:0.06em;margin-bottom:8px}
+.api-saved{font-size:11px;color:#3B6D11;margin-top:6px;display:none}
+.kw-row{display:flex;flex-wrap:wrap;gap:6px;margin-top:8px}
+.kw-hit{background:#EAF3DE;color:#27500A;font-size:11px;padding:3px 9px;border-radius:20px}
+.kw-miss{background:#FCEBEB;color:#A32D2D;font-size:11px;padding:3px 9px;border-radius:20px}
+.dl-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:14px}
+.dl-btn{padding:12px;border-radius:10px;font-size:13px;font-weight:500;cursor:pointer;font-family:'DM Sans',sans-serif;text-align:center;border:1px solid #ddd;background:#fff;transition:all 0.2s}
+.dl-btn:hover{background:#f5f5f5}
+.dl-btn.primary{background:#185FA5;color:#fff;border-color:#185FA5}
+.dl-btn.primary:hover{background:#0C447C}
+.pro-badge{background:#EEEDFE;color:#3C3489;font-size:10px;padding:2px 8px;border-radius:10px;border:0.5px solid #AFA9EC;display:inline-block;margin-left:6px;vertical-align:middle}
+.pep{background:#EAF3DE;border:0.5px solid #97C459;border-radius:12px;padding:1.25rem;margin-bottom:1rem}
+.pep-title{font-size:13px;font-weight:500;color:#27500A;margin-bottom:6px}
+.pep-text{font-size:13px;color:#3B6D11;line-height:1.7}
+select{font-family:'DM Sans',sans-serif;font-size:12px;border:1px solid #eee;border-radius:8px;padding:6px 10px;color:#1a1a1a;background:#fff;cursor:pointer}
+.checklist-item{padding:10px 0;border-bottom:0.5px solid #eee;cursor:pointer;display:flex;align-items:center;gap:10px;font-size:13px;color:#1a1a1a}
+.checklist-item:last-child{border-bottom:none}
+.hidden{display:none}
+.section{display:none}
+.section.active{display:block}
+@media(max-width:600px){.ways,.dl-grid{grid-template-columns:1fr}.steps-bar{flex-wrap:wrap}}
+</style>
+</head>
+<body>
+
+<div class="topbar">
+  <div class="logo">Voice<b>My</b>Resume</div>
+  <div class="topbar-right">Your corner, every step of the way.</div>
+</div>
+
+<div class="app">
+
+  <div class="settings-wrap">
+    <div class="settings-title">Your Claude AI key — enter once, saved privately</div>
+    <input type="password" id="api-key-input" placeholder="Paste your Claude API key here — sk-ant-api03-..." oninput="saveKey()"/>
+    <div class="api-saved" id="api-saved">✓ Key saved — AI is ready to go!</div>
+  </div>
+
+  <div class="steps-bar">
+    <button class="step-btn active" id="sbtn-1" onclick="goStep(1)"><span class="step-btn-n">Step 1</span><span class="step-btn-l">Your experience</span></button>
+    <button class="step-btn todo" id="sbtn-2" onclick="goStep(2)"><span class="step-btn-n">Step 2</span><span class="step-btn-l">Job description</span></button>
+    <button class="step-btn todo" id="sbtn-3" onclick="goStep(3)"><span class="step-btn-n">Step 3</span><span class="step-btn-l">Your resume</span></button>
+    <button class="step-btn todo" id="sbtn-4" onclick="goStep(4)"><span class="step-btn-n">Step 4</span><span class="step-btn-l">Cover letter</span></button>
+    <button class="step-btn todo" id="sbtn-5" onclick="goStep(5)"><span class="step-btn-n">Step 5</span><span class="step-btn-l">Interview prep</span></button>
+  </div>
+
+  <!-- STEP 1 -->
+  <div class="section active" id="step-1">
+    <div class="encourage">
+      <div class="encourage-emoji">👋</div>
+      <div class="encourage-text">Welcome! Let's build your resume.</div>
+      <div class="encourage-sub">You know how to do this job. We're just going to help you say it right.</div>
+    </div>
+    <div class="card">
+      <div class="card-title">How would you like to start?</div>
+      <div class="card-sub">Pick whatever feels easiest — all three work perfectly.</div>
+      <div class="ways">
+        <div class="way sel" id="w-speak" onclick="selWay('speak')">
+          <div class="way-icon" style="background:#E6F1FB"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#185FA5" stroke-width="2"><path d="M12 1a3 3 0 0 0-3 3v8a3 3 0 0 0 6 0V4a3 3 0 0 0-3-3z"/><path d="M19 10v2a7 7 0 0 1-14 0v-2"/><line x1="12" y1="19" x2="12" y2="23"/><line x1="8" y1="23" x2="16" y2="23"/></svg></div>
+          <div class="way-title">Speak it</div>
+          <div class="way-desc">Just talk — we write it for you</div>
+        </div>
+        <div class="way" id="w-type" onclick="selWay('type')">
+          <div class="way-icon" style="background:#EAF3DE"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#3B6D11" stroke-width="2"><rect x="2" y="4" width="20" height="16" rx="2"/><path d="M8 10h8M8 14h4"/></svg></div>
+          <div class="way-title">Type it</div>
+          <div class="way-desc">Write in your own words</div>
+        </div>
+        <div class="way" id="w-paste" onclick="selWay('paste')">
+          <div class="way-icon" style="background:#EEEDFE"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#534AB7" stroke-width="2"><path d="M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2"/><rect x="8" y="2" width="8" height="4" rx="1"/></svg></div>
+          <div class="way-title">Paste old resume</div>
+          <div class="way-desc">We'll make it better</div>
+        </div>
+      </div>
+
+      <div id="input-speak">
+        <div class="mic-wrap">
+          <button class="mic" id="mic-btn" onclick="toggleMic()">
+            <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2"><path d="M12 1a3 3 0 0 0-3 3v8a3 3 0 0 0 6 0V4a3 3 0 0 0-3-3z"/><path d="M19 10v2a7 7 0 0 1-14 0v-2"/><line x1="12" y1="19" x2="12" y2="23"/><line x1="8" y1="23" x2="16" y2="23"/></svg>
+          </button>
+          <div class="mic-lbl" id="mic-lbl">Tap the mic and start talking</div>
+          <div class="mic-hint">Say: "I worked at Walmart for 3 years as a cashier. I trained new employees and helped at the service desk."</div>
+        </div>
+        <div class="transcript-box" id="transcript"></div>
+        <button class="btn-primary hidden" id="speak-next" onclick="buildResume()">Build my professional resume with AI →</button>
+      </div>
+
+      <div id="input-type" class="hidden">
+        <textarea id="type-input" rows="6" placeholder="Write about your experience in your own words. No need to sound professional — just tell us what you did and where.&#10;&#10;Example: I worked at Target for 4 years in electronics. I helped customers, kept shelves stocked, and trained 2 new people..."></textarea>
+        <button class="btn-primary" onclick="buildResume()">Build my professional resume with AI →</button>
+      </div>
+
+      <div id="input-paste" class="hidden">
+        <div style="background:#EEEDFE;border:0.5px solid #AFA9EC;border-radius:8px;padding:10px 14px;font-size:12px;color:#3C3489;margin-bottom:12px;line-height:1.6">Already have a resume? We take what you have and make it even better.</div>
+        <textarea id="paste-input" rows="8" placeholder="Paste your existing resume here...&#10;&#10;John Smith · john@email.com&#10;&#10;Walmart — Cashier 2019-2023&#10;- Ran register&#10;- Helped customers"></textarea>
+        <button class="btn-primary" onclick="buildResume()">Upgrade my resume with AI →</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- STEP 2 -->
+  <div class="section" id="step-2">
+    <button class="btn-back" onclick="goStep(1)">← Back</button>
+    <div class="encourage">
+      <div class="encourage-emoji">🎯</div>
+      <div class="encourage-text">Great! Now let's target your resume to the specific job.</div>
+      <div class="encourage-sub">This is how your resume stands out — we tailor it to exactly what they're looking for.</div>
+    </div>
+    <div class="card">
+      <div class="card-title">Paste the job description</div>
+      <div class="card-sub">Find the job on Indeed or LinkedIn. Copy the full job description and paste it below.</div>
+      <label style="font-size:12px;color:#888;display:block;margin-bottom:4px">Job title & company (optional)</label>
+      <input type="text" id="job-title" placeholder="e.g. Warehouse Supervisor at Amazon"/>
+      <label style="font-size:12px;color:#888;display:block;margin-bottom:4px">Full job description</label>
+      <textarea id="job-desc" rows="8" placeholder="Paste the full job description here..."></textarea>
+      <button class="btn-primary" onclick="tailorResume()">Tailor my resume to this job →</button>
+      <button class="btn-secondary" onclick="goStep(3)">Skip — use general resume</button>
+    </div>
+  </div>
+
+  <!-- STEP 3 -->
+  <div class="section" id="step-3">
+    <button class="btn-back" onclick="goStep(2)">← Back</button>
+    <div class="encourage">
+      <div class="encourage-emoji">🎉</div>
+      <div class="encourage-text">Your professional resume is ready!</div>
+      <div class="encourage-sub">Read it over and make any changes. It's your resume — we just helped you say it right.</div>
+    </div>
+
+    <div class="card" id="match-score-card" style="display:none">
+      <div style="display:grid;grid-template-columns:auto 1fr;gap:1.25rem;align-items:center">
+        <div>
+          <div class="score-ring"><span class="score-num" id="score-num">--</span></div>
+          <div style="text-align:center;font-size:11px;color:#888;margin-top:4px">ATS match</div>
+        </div>
+        <div>
+          <div style="font-size:14px;font-weight:500;color:#1a1a1a;margin-bottom:6px" id="score-label">Analyzing...</div>
+          <div class="kw-row" id="kw-row"></div>
+          <div style="font-size:11px;color:#888;margin-top:6px"><span style="background:#EAF3DE;color:#27500A;padding:2px 6px;border-radius:8px">green</span> = found &nbsp; <span style="background:#FCEBEB;color:#A32D2D;padding:2px 6px;border-radius:8px">red</span> = missing</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="card">
+      <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:14px">
+        <div style="font-size:14px;font-weight:500;color:#1a1a1a">Your resume</div>
+        <select id="template-select" onchange="changeTemplate()">
+          <option value="blue">Executive blue</option>
+          <option value="green">Meridian green</option>
+          <option value="purple">Prestige purple</option>
+          <option value="gray">Clean slate</option>
+          <option value="teal">Clinic teal</option>
+        </select>
+      </div>
+      <div class="resume-header-line" id="resume-accent-line"></div>
+      <div class="resume-output" id="resume-output" contenteditable="true">Your resume will appear here...</div>
+      <div class="dl-grid">
+        <button class="dl-btn primary" onclick="downloadPDF()">Download PDF — free</button>
+        <button class="dl-btn" onclick="downloadWord()">Download Word <span class="pro-badge">Pro</span></button>
+      </div>
+      <button class="btn-primary" style="margin-top:12px" onclick="goStep(4)">Generate matching cover letter →</button>
+    </div>
+  </div>
+
+  <!-- STEP 4 -->
+  <div class="section" id="step-4">
+    <button class="btn-back" onclick="goStep(3)">← Back</button>
+    <div class="encourage">
+      <div class="encourage-emoji">✉️</div>
+      <div class="encourage-text">Let's write your cover letter.</div>
+      <div class="encourage-sub">Matched to your resume — same voice, same style, same job focus.</div>
+    </div>
+    <div class="card">
+      <div class="card-title">Cover letter generator <span class="pro-badge">Pro</span></div>
+      <div class="card-sub">We'll write a cover letter that sounds like you — warm, professional and genuine.</div>
+      <label style="font-size:12px;color:#888;display:block;margin-bottom:4px">Your name</label>
+      <input type="text" id="cover-name" placeholder="Your full name"/>
+      <label style="font-size:12px;color:#888;display:block;margin-bottom:4px">Hiring manager name (optional)</label>
+      <input type="text" id="cover-manager" placeholder="e.g. Sarah Johnson, or leave blank"/>
+      <button class="btn-primary" onclick="generateCoverLetter()">Generate my cover letter →</button>
+    </div>
+    <div class="card hidden" id="cover-output-card">
+      <div style="font-size:14px;font-weight:500;color:#1a1a1a;margin-bottom:12px">Your cover letter</div>
+      <div class="resume-output" id="cover-output" contenteditable="true"></div>
+      <div class="dl-grid" style="margin-top:14px">
+        <button class="dl-btn primary" onclick="downloadCoverPDF()">Download PDF — free</button>
+        <button class="dl-btn" onclick="downloadCoverWord()">Download Word <span class="pro-badge">Pro</span></button>
+      </div>
+      <button class="btn-primary" style="margin-top:12px" onclick="goStep(5)">Prepare for my interview →</button>
+    </div>
+  </div>
+
+  <!-- STEP 5 -->
+  <div class="section" id="step-5">
+    <button class="btn-back" onclick="goStep(4)">← Back</button>
+    <div class="encourage">
+      <div class="encourage-emoji">💪</div>
+      <div class="encourage-text">You've got an interview — let's get you ready!</div>
+      <div class="encourage-sub">Practice the questions, calm your nerves, and walk in knowing you belong there.</div>
+    </div>
+
+    <div class="pep">
+      <div class="pep-title">Your personal pep talk <span class="pro-badge">Pro</span></div>
+      <div class="pep-text" id="pep-text">Generating your personal pep talk...</div>
+    </div>
+
+    <div class="card">
+      <div class="card-title">Practice interview questions <span class="pro-badge">Pro</span></div>
+      <div class="card-sub">Real questions employers ask. Practice saying your answers out loud before the interview.</div>
+      <div id="interview-questions">
+        <div style="text-align:center;padding:1rem;color:#aaa;font-size:13px">Loading questions for your job...</div>
+      </div>
+      <button class="btn-primary" style="margin-top:1rem" onclick="generateMoreQuestions()">Generate more questions →</button>
+    </div>
+
+    <div class="card">
+      <div class="card-title">Day of checklist</div>
+      <div class="card-sub">Check these off before you walk in.</div>
+      <div id="checklist">
+        <div class="checklist-item" onclick="toggleCheck(this)"><span class="check-box" style="font-size:16px;flex-shrink:0">☐</span><span>Research the company tonight — Google them</span></div>
+        <div class="checklist-item" onclick="toggleCheck(this)"><span class="check-box" style="font-size:16px;flex-shrink:0">☐</span><span>Print 3 copies of your resume</span></div>
+        <div class="checklist-item" onclick="toggleCheck(this)"><span class="check-box" style="font-size:16px;flex-shrink:0">☐</span><span>Plan your outfit tonight</span></div>
+        <div class="checklist-item" onclick="toggleCheck(this)"><span class="check-box" style="font-size:16px;flex-shrink:0">☐</span><span>Map the location — arrive 10 minutes early</span></div>
+        <div class="checklist-item" onclick="toggleCheck(this)"><span class="check-box" style="font-size:16px;flex-shrink:0">☐</span><span>Set TWO alarms for the morning</span></div>
+        <div class="checklist-item" onclick="toggleCheck(this)"><span class="check-box" style="font-size:16px;flex-shrink:0">☐</span><span>Prepare 2-3 questions to ask the interviewer</span></div>
+        <div class="checklist-item" onclick="toggleCheck(this)"><span class="check-box" style="font-size:16px;flex-shrink:0">☐</span><span>Take 3 deep breaths before walking in</span></div>
+        <div class="checklist-item" onclick="toggleCheck(this)"><span class="check-box" style="font-size:16px;flex-shrink:0">☐</span><span>Remember — they already liked your resume. You earned this.</span></div>
+      </div>
+    </div>
+
+    <div style="background:#185FA5;border-radius:16px;padding:1.75rem;text-align:center;color:#fff;margin-bottom:1.25rem">
+      <div style="font-size:28px;margin-bottom:8px">🎯</div>
+      <div style="font-size:16px;font-weight:500;margin-bottom:8px">You are ready.</div>
+      <div style="font-size:13px;opacity:0.85;line-height:1.7">You built a professional resume. You tailored it to the job. You practiced the questions. Now go show them what you've got. This job could be yours.</div>
+    </div>
+  </div>
+
+  <div class="card hidden" id="ai-loading">
+    <div class="ai-loading">
+      <div class="ai-spinner"></div>
+      <div class="ai-loading-text" id="loading-text">Writing your professional resume...</div>
+      <div class="ai-loading-sub" id="loading-sub">Making it sound human, not like AI wrote it</div>
+    </div>
+  </div>
+
+</div>
+
+<script>
+var currentWay='speak';
+var userExperience='';
+var jobDescription='';
+var generatedResume='';
+var recording=false;
+var recognition=null;
+var accumulatedTranscript='';
+var templateColors={blue:'#185FA5',green:'#3B6D11',purple:'#534AB7',gray:'#5F5E5A',teal:'#0F6E56'};
+
+function saveKey(){
+  var k=document.getElementById('api-key-input').value.trim();
+  if(k.startsWith('sk-ant-')){
+    localStorage.setItem('vmr_key',k);
+    document.getElementById('api-saved').style.display='block';
+  }
+}
+function getKey(){return localStorage.getItem('vmr_key')||document.getElementById('api-key-input').value.trim();}
+function loadSavedKey(){
+  var k=localStorage.getItem('vmr_key');
+  if(k){document.getElementById('api-key-input').value=k;document.getElementById('api-saved').style.display='block';}
+}
+
+function markdownToHtml(text){
+  text=text.replace(/SCORE:\d+/g,'').replace(/MATCHED:[^\n]*/g,'').replace(/MISSING:[^\n]*/g,'').replace(/\n{3,}/g,'\n\n').trim();
+  var lines=text.split('\n');
+  var html='';
+  var inList=false;
+  for(var i=0;i<lines.length;i++){
+    var line=lines[i].trim();
+    if(!line){if(inList){html+='</ul>';inList=false;}continue;}
+    if(line.startsWith('# ')){if(inList){html+='</ul>';inList=false;}html+='<h1>'+fmt(line.slice(2))+'</h1>';}
+    else if(line.startsWith('## ')){if(inList){html+='</ul>';inList=false;}html+='<h2>'+fmt(line.slice(3))+'</h2>';}
+    else if(line.startsWith('### ')){if(inList){html+='</ul>';inList=false;}html+='<h3>'+fmt(line.slice(4))+'</h3>';}
+    else if(/^[-•*] /.test(line)){if(!inList){html+='<ul>';inList=true;}html+='<li>'+fmt(line.slice(2))+'</li>';}
+    else if(/^---+$/.test(line)){if(inList){html+='</ul>';inList=false;}html+='<hr>';}
+    else{if(inList){html+='</ul>';inList=false;}html+='<p>'+fmt(line)+'</p>';}
+  }
+  if(inList)html+='</ul>';
+  return html;
+}
+function fmt(t){
+  return t.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;')
+    .replace(/\*\*([^*]+)\*\*/g,'<strong>$1</strong>')
+    .replace(/\*([^*]+)\*/g,'<em>$1</em>');
+}
+
+function selWay(w){
+  currentWay=w;
+  ['speak','type','paste'].forEach(function(x){
+    document.getElementById('w-'+x).classList.remove('sel');
+    document.getElementById('input-'+x).classList.add('hidden');
+  });
+  document.getElementById('w-'+w).classList.add('sel');
+  document.getElementById('input-'+w).classList.remove('hidden');
+}
+
+function toggleMic(){
+  if(!('webkitSpeechRecognition' in window)&&!('SpeechRecognition' in window)){
+    alert('Voice input requires HTTPS. Your SSL certificate is being set up — check back tomorrow, or use Type or Paste instead!');
+    return;
+  }
+  if(recording){
+    recording=false;
+    if(recognition)recognition.stop();
+    document.getElementById('mic-btn').classList.remove('rec');
+    document.getElementById('mic-lbl').textContent='Tap to record again or click Build Resume below';
+    if(accumulatedTranscript.trim())document.getElementById('speak-next').classList.remove('hidden');
+    return;
+  }
+  recording=true;
+  accumulatedTranscript='';
+  document.getElementById('mic-btn').classList.add('rec');
+  document.getElementById('mic-lbl').textContent='Listening... speak about your work experience';
+  document.getElementById('transcript').style.display='block';
+  document.getElementById('transcript').textContent='';
+  var SR=window.SpeechRecognition||window.webkitSpeechRecognition;
+  recognition=new SR();
+  recognition.continuous=true;
+  recognition.interimResults=true;
+  recognition.lang='en-US';
+  recognition.onresult=function(e){
+    var interim='';
+    for(var i=e.resultIndex;i<e.results.length;i++){
+      if(e.results[i].isFinal)accumulatedTranscript+=e.results[i][0].transcript+' ';
+      else interim+=e.results[i][0].transcript;
+    }
+    document.getElementById('transcript').textContent=accumulatedTranscript+interim;
+  };
+  recognition.onerror=function(){
+    recording=false;
+    document.getElementById('mic-btn').classList.remove('rec');
+    document.getElementById('mic-lbl').textContent='Could not hear you — try again or use Type instead';
+  };
+  recognition.onend=function(){if(recording){try{recognition.start();}catch(e){}}};
+  recognition.start();
+}
+
+async function callClaude(sys,usr,lt,ls){
+  var key=getKey();
+  if(!key||!key.startsWith('sk-ant-')){alert('Please enter your Claude API key at the top!');return null;}
+  document.getElementById('ai-loading').classList.remove('hidden');
+  document.getElementById('loading-text').textContent=lt||'Working...';
+  document.getElementById('loading-sub').textContent=ls||'Takes about 10-15 seconds';
+  try{
+    var r=await fetch('https://api.anthropic.com/v1/messages',{
+      method:'POST',
+      headers:{'Content-Type':'application/json','x-api-key':key,'anthropic-version':'2023-06-01','anthropic-dangerous-direct-browser-access':'true'},
+      body:JSON.stringify({model:'claude-sonnet-4-20250514',max_tokens:2000,system:sys,messages:[{role:'user',content:usr}]})
+    });
+    var d=await r.json();
+    document.getElementById('ai-loading').classList.add('hidden');
+    if(d.content&&d.content[0])return d.content[0].text;
+    if(d.error)alert('API Error: '+d.error.message);
+    return null;
+  }catch(e){
+    document.getElementById('ai-loading').classList.add('hidden');
+    alert('Something went wrong. Check your API key and try again.');
+    return null;
+  }
+}
+
+async function buildResume(){
+  if(currentWay==='speak'){userExperience=accumulatedTranscript.trim();if(!userExperience){alert('Please record your experience first!');return;}}
+  else if(currentWay==='type'){userExperience=document.getElementById('type-input').value.trim();if(!userExperience){alert('Please type about your experience first!');return;}}
+  else{userExperience=document.getElementById('paste-input').value.trim();if(!userExperience){alert('Please paste your existing resume first!');return;}}
+
+  var sys=`You are a professional resume writer helping everyday workers create professional resumes.
+Transform their raw experience into a polished professional resume.
+RULES:
+1. Sound human — like a real person wrote it, NOT like AI
+2. Natural professional language — not overly corporate
+3. Highlight achievements with numbers where possible
+4. Keep it honest — don't invent things
+5. Use strong action verbs
+
+Format the resume EXACTLY like this with these exact headers:
+# [Full Name]
+[email] | [phone] | [city, state]
+
+## Professional Summary
+[3-4 professional sentences]
+
+## Work Experience
+### [Job Title] | [Company] | [dates]
+- [achievement bullet]
+- [achievement bullet]
+- [achievement bullet]
+
+## Skills
+- [skill]
+- [skill]
+
+## Education
+### [Degree] | [School] | [Year]`;
+
+  var usr=`Create a professional resume from this experience:
+"${userExperience}"
+Use [Your Name], [your.email@email.com], [City, State], [Phone] as placeholders if not provided.
+Make it sound professional but human.`;
+
+  var result=await callClaude(sys,usr,'Writing your professional resume...','Making it sound human, not like AI wrote it');
+  if(result){generatedResume=result;document.getElementById('resume-output').innerHTML=markdownToHtml(result);goStep(2);}
+}
+
+async function tailorResume(){
+  jobDescription=document.getElementById('job-desc').value.trim();
+  if(!jobDescription){alert('Please paste the job description first!');return;}
+
+  var sys=`You are an expert ATS resume optimizer. Tailor resumes to match job descriptions.
+RULES:
+1. Keep the same person's experience — don't invent new jobs or skills
+2. Naturally incorporate keywords from the job description
+3. Emphasize experience that matches the job
+4. Keep it sounding human and genuine
+5. Use the same # ## ### format as the original
+
+After the resume, on new lines add:
+SCORE:[0-100]
+MATCHED:[kw1,kw2,kw3,kw4,kw5]
+MISSING:[kw1,kw2,kw3]`;
+
+  var usr=`Tailor this resume to the job description:
+
+RESUME:
+${generatedResume}
+
+JOB DESCRIPTION:
+${jobDescription}
+
+Job Title: ${document.getElementById('job-title').value||'Not specified'}`;
+
+  var result=await callClaude(sys,usr,'Tailoring your resume to the job...','Matching keywords and boosting your ATS score');
+  if(result){
+    var sm=result.match(/SCORE:(\d+)/);
+    var mm=result.match(/MATCHED:([^\n]+)/);
+    var xm=result.match(/MISSING:([^\n]+)/);
+    var rt=result.replace(/SCORE:\d+/g,'').replace(/MATCHED:[^\n]*/g,'').replace(/MISSING:[^\n]*/g,'').replace(/\n{3,}/g,'\n\n').trim();
+    generatedResume=rt;
+    document.getElementById('resume-output').innerHTML=markdownToHtml(rt);
+    if(sm){
+      var sc=parseInt(sm[1]);
+      document.getElementById('score-num').textContent=sc+'%';
+      document.getElementById('score-label').textContent=sc>=80?'Strong match — great job!':sc>=60?'Good match — almost there!':'Decent match — could be improved';
+      document.getElementById('match-score-card').style.display='block';
+      var kr=document.getElementById('kw-row');kr.innerHTML='';
+      if(mm)mm[1].split(',').forEach(function(k){var s=document.createElement('span');s.className='kw-hit';s.textContent=k.trim();kr.appendChild(s);});
+      if(xm)xm[1].split(',').forEach(function(k){var s=document.createElement('span');s.className='kw-miss';s.textContent=k.trim();kr.appendChild(s);});
+    }
+    goStep(3);
+  }
+}
+
+async function generateCoverLetter(){
+  var name=document.getElementById('cover-name').value.trim()||'[Your Name]';
+  var mgr=document.getElementById('cover-manager').value.trim()||'Hiring Manager';
+
+  var sys=`You are a professional cover letter writer helping everyday workers.
+RULES:
+1. Sound human and genuine — NOT corporate or stiff
+2. Show real enthusiasm
+3. Connect experience to job requirements
+4. Keep to 3-4 paragraphs
+5. Warm but professional tone
+6. Do NOT start with "I am writing to express my interest"
+7. Do NOT use generic AI phrases like "I am confident that"`;
+
+  var usr=`Write a professional cover letter for ${name} applying for: ${document.getElementById('job-title').value||'this position'}.
+Resume: ${generatedResume}
+Job: ${jobDescription||'Not provided'}
+Address to: ${mgr}
+Make it warm, genuine and professional.`;
+
+  var result=await callClaude(sys,usr,'Writing your cover letter...','Making it sound warm and genuine');
+  if(result){
+    document.getElementById('cover-output').innerHTML=markdownToHtml(result);
+    document.getElementById('cover-output-card').classList.remove('hidden');
+  }
+}
+
+async function generateMoreQuestions(){
+  var sys=`You are an interview coach helping everyday workers prepare for job interviews.`;
+  var usr=`Generate 6 interview questions for someone applying for: ${document.getElementById('job-title').value||'this position'}.
+Include: 2 general, 2 experience-based, 1 challenging (weakness/conflict/gap), 1 to ask interviewer.
+Format each as:
+Q: [question]
+TIP: [brief answer tip]`;
+
+  var result=await callClaude(sys,usr,'Generating interview questions...','Tailored to your specific job');
+  if(result){
+    var c=document.getElementById('interview-questions');c.innerHTML='';
+    result.split(/Q:/g).filter(function(p){return p.trim();}).forEach(function(part){
+      var ls=part.split(/TIP:/g);
+      var q=ls[0].trim();var tip=ls[1]?ls[1].trim():'';
+      var d=document.createElement('div');
+      d.style.cssText='border:1px solid #eee;border-radius:10px;padding:14px;margin-bottom:10px;background:#fff';
+      d.innerHTML='<div style="font-size:14px;font-weight:500;color:#1a1a1a;margin-bottom:6px">'+q+'</div>'+(tip?'<div style="font-size:12px;color:#888;background:#f7f7f5;border-radius:6px;padding:8px;line-height:1.6">💡 '+tip+'</div>':'');
+      c.appendChild(d);
+    });
+  }
+}
+
+async function generatePepTalk(){
+  var sys=`You are a warm encouraging career coach. Write short genuine pep talks that feel personal and real, not generic.`;
+  var usr=`Write a personal pep talk (3-4 sentences) for someone who built their resume and has an interview for: ${document.getElementById('job-title').value||'a new job'}.
+Make it warm, specific and encouraging.`;
+  var result=await callClaude(sys,usr,'Writing your pep talk...','Something just for you');
+  if(result)document.getElementById('pep-text').textContent=result;
+}
+
+function changeTemplate(){
+  var t=document.getElementById('template-select').value;
+  var c=templateColors[t]||'#185FA5';
+  document.getElementById('resume-accent-line').style.background=c;
+}
+
+function downloadPDF(){
+  var content=document.getElementById('resume-output').innerHTML;
+  var c=templateColors[document.getElementById('template-select').value]||'#185FA5';
+  var win=window.open('','_blank');
+  win.document.write('<!DOCTYPE html><html><head><title>My Resume — VoiceMyResume</title><style>*{box-sizing:border-box;margin:0;padding:0}body{font-family:Georgia,serif;max-width:720px;margin:0 auto;padding:40px 50px;line-height:1.7;color:#1a1a1a;font-size:13px}h1{font-size:22px;font-weight:bold;color:#1a1a1a;margin-bottom:6px;border-bottom:3px solid '+c+';padding-bottom:8px}h2{font-size:10px;font-weight:bold;text-transform:uppercase;letter-spacing:0.12em;color:'+c+';margin:20px 0 6px;border-bottom:1px solid '+c+';padding-bottom:3px}h3{font-size:13px;font-weight:bold;color:#1a1a1a;margin:12px 0 2px}p{margin-bottom:6px;color:#333;line-height:1.7}ul{padding-left:18px;margin-bottom:10px}ul li{margin-bottom:4px;color:#333;line-height:1.6}strong{font-weight:bold}hr{border:none;border-top:0.5px solid #ddd;margin:12px 0}@media print{body{padding:20px 30px}@page{margin:0.5in}}</style></head><body>'+content+'</body></html>');
+  win.document.close();
+  setTimeout(function(){win.print();},600);
+}
+
+function downloadCoverPDF(){
+  var content=document.getElementById('cover-output').innerHTML;
+  var win=window.open('','_blank');
+  win.document.write('<!DOCTYPE html><html><head><title>Cover Letter — VoiceMyResume</title><style>*{box-sizing:border-box;margin:0;padding:0}body{font-family:Georgia,serif;max-width:720px;margin:0 auto;padding:40px 50px;line-height:1.8;color:#1a1a1a;font-size:13px}p{margin-bottom:14px;color:#333;line-height:1.8}strong{font-weight:bold}@media print{body{padding:20px 30px}@page{margin:0.5in}}</style></head><body>'+content+'</body></html>');
+  win.document.close();
+  setTimeout(function(){win.print();},600);
+}
+
+function downloadWord(){alert('Word download is a Pro feature — upgrade to Pro for $4.99/month!');}
+function downloadCoverWord(){alert('Word download is a Pro feature — upgrade to Pro for $4.99/month!');}
+
+function toggleCheck(el){
+  var box=el.querySelector('.check-box');
+  if(box.textContent==='☐'){box.textContent='☑';el.style.textDecoration='line-through';el.style.color='#aaa';}
+  else{box.textContent='☐';el.style.textDecoration='none';el.style.color='#1a1a1a';}
+}
+
+function goStep(n){
+  document.querySelectorAll('.section').forEach(function(s){s.classList.remove('active');});
+  document.getElementById('step-'+n).classList.add('active');
+  document.querySelectorAll('.step-btn').forEach(function(b,i){
+    b.classList.remove('active','done','todo');
+    if(i+1<n)b.classList.add('done');
+    else if(i+1===n)b.classList.add('active');
+    else b.classList.add('todo');
+  });
+  if(n===5){generatePepTalk();generateMoreQuestions();}
+  window.scrollTo({top:0,behavior:'smooth'});
+}
+
+loadSavedKey();
+changeTemplate();
+var urlParams=new URLSearchParams(window.location.search);
+var startMode=urlParams.get('mode')||'speak';
+selWay(startMode);
+</script>
+</body>
+</html>
