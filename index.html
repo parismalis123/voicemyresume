@@ -1,0 +1,509 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>VoiceMyResume — Just Talk. We'll Write It.</title>
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500&family=DM+Serif+Display&display=swap" rel="stylesheet">
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:'DM Sans',sans-serif;background:#fff;color:#1a1a1a}
+a{text-decoration:none;color:inherit}
+
+/* Mission bar */
+.mission-bar{background:#185FA5;padding:10px 1.25rem;text-align:center}
+.mission-bar span{font-size:13px;color:#E6F1FB;font-weight:500}
+
+/* Nav */
+nav{display:flex;align-items:center;justify-content:space-between;padding:1.25rem 2rem;border-bottom:0.5px solid #e5e5e5;max-width:1100px;margin:0 auto}
+.logo{font-size:20px;font-weight:500;letter-spacing:-0.02em;color:#1a1a1a}
+.logo b{color:#185FA5;font-weight:500}
+.nav-links{display:flex;align-items:center;gap:6px}
+.nav-link{font-size:13px;color:#666;padding:7px 12px;background:none;border:none;cursor:pointer;font-family:'DM Sans',sans-serif;border-radius:8px}
+.nav-link:hover{background:#f5f5f5}
+.nav-cta{background:#185FA5;color:#E6F1FB;border:none;padding:9px 18px;border-radius:8px;font-size:13px;font-weight:500;cursor:pointer;font-family:'DM Sans',sans-serif}
+.nav-cta:hover{background:#0C447C}
+
+/* Page wrapper */
+.page{max-width:1100px;margin:0 auto;padding:0 2rem}
+
+/* Hero */
+.hero{padding:3.5rem 0 2rem;display:grid;grid-template-columns:1fr 1fr;gap:3rem;align-items:center}
+.hero-badge{display:inline-flex;align-items:center;gap:6px;background:#EEEDFE;color:#3C3489;font-size:11px;padding:5px 14px;border-radius:20px;border:0.5px solid #AFA9EC;margin-bottom:1.25rem}
+.hero h1{font-family:'DM Serif Display',serif;font-size:42px;font-weight:400;color:#1a1a1a;line-height:1.2;margin-bottom:1rem}
+.hero h1 em{color:#185FA5;font-style:normal}
+.hero p{font-size:16px;color:#555;line-height:1.75;margin-bottom:1.5rem}
+.cta-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:10px}
+.cta-a{background:#185FA5;color:#fff;border:none;padding:15px 16px;border-radius:12px;font-size:14px;font-weight:500;cursor:pointer;font-family:'DM Sans',sans-serif;text-align:center;line-height:1.4}
+.cta-a:hover{background:#0C447C}
+.cta-b{background:none;border:1px solid #ddd;color:#1a1a1a;padding:15px 16px;border-radius:12px;font-size:14px;cursor:pointer;font-family:'DM Sans',sans-serif;text-align:center;line-height:1.4}
+.cta-b:hover{background:#f9f9f9}
+.cta-c{background:#EAF3DE;border:0.5px solid #97C459;color:#27500A;padding:13px 16px;border-radius:12px;font-size:14px;cursor:pointer;font-family:'DM Sans',sans-serif;text-align:center;width:100%;line-height:1.4}
+.cta-c:hover{background:#d8edbe}
+.trust{display:flex;align-items:center;gap:6px;font-size:11px;color:#888;margin-top:10px}
+.trust-dot{width:6px;height:6px;border-radius:50%;background:#639922;display:inline-block}
+
+/* Resume preview card */
+.resume-card{background:#fff;border:0.5px solid #e5e5e5;border-radius:12px;padding:18px;box-shadow:0 2px 12px rgba(0,0,0,0.06)}
+.rc-accent{height:5px;border-radius:3px;margin-bottom:12px}
+.rc-name{font-size:16px;font-weight:500;color:#1a1a1a;margin-bottom:2px}
+.rc-contact{font-size:10px;color:#888;margin-bottom:10px}
+.rc-sec{font-size:9px;font-weight:500;text-transform:uppercase;letter-spacing:0.08em;margin-bottom:4px}
+.rc-bar{height:3px;border-radius:2px;margin-bottom:3px}
+.ai-badge{background:#EEEDFE;border:0.5px solid #AFA9EC;border-radius:8px;padding:9px 11px;margin-top:10px;display:flex;align-items:flex-start;gap:8px}
+.preview-mini{display:grid;grid-template-columns:1fr 1fr;gap:6px;margin-top:8px}
+.preview-stat{background:#f5f5f5;border-radius:8px;padding:10px;text-align:center}
+.preview-stat-n{font-size:18px;font-weight:500;color:#1a1a1a}
+.preview-stat-l{font-size:10px;color:#888}
+
+/* Honest banner */
+.honest{background:#EAF3DE;border:0.5px solid #97C459;border-radius:12px;padding:16px 20px;display:flex;align-items:center;gap:14px;margin:1.5rem 0}
+.honest-dot{width:10px;height:10px;border-radius:50%;background:#3B6D11;flex-shrink:0}
+
+/* Stats */
+.stats{display:grid;grid-template-columns:repeat(3,1fr);gap:1rem;margin:1.5rem 0}
+.stat{background:#f7f7f7;border-radius:8px;padding:1.25rem;text-align:center}
+.stat-n{font-size:26px;font-weight:500;color:#1a1a1a}
+.stat-l{font-size:11px;color:#888;margin-top:3px;line-height:1.4}
+
+.divider{border:none;border-top:0.5px solid #eee;margin:2.5rem 0}
+
+/* Section labels */
+.sec-label{font-size:11px;font-weight:500;text-transform:uppercase;letter-spacing:0.08em;color:#185FA5;text-align:center;margin-bottom:6px}
+.sec-title{font-family:'DM Serif Display',serif;font-size:28px;font-weight:400;color:#1a1a1a;text-align:center;margin-bottom:8px}
+.sec-sub{font-size:14px;color:#666;text-align:center;line-height:1.7;max-width:520px;margin:0 auto 1.75rem}
+
+/* 3 ways */
+.ways{display:grid;grid-template-columns:repeat(3,1fr);gap:1rem;margin-bottom:1.25rem}
+.way{background:#fff;border:1px solid #eee;border-radius:12px;padding:1.5rem;cursor:pointer;transition:border-color 0.15s}
+.way:hover{border-color:#ccc}
+.way.sel{border:2px solid #185FA5;background:#fff}
+.way-icon{width:46px;height:46px;border-radius:10px;display:flex;align-items:center;justify-content:center;margin-bottom:12px}
+.way-title{font-size:15px;font-weight:500;color:#1a1a1a;margin-bottom:5px}
+.way-desc{font-size:13px;color:#666;line-height:1.6;margin-bottom:10px}
+.way-pill{font-size:10px;padding:3px 10px;border-radius:20px;display:inline-block}
+
+/* Input box */
+.ibox{background:#fff;border:1px solid #eee;border-radius:12px;padding:1.75rem;margin-bottom:1.5rem}
+.ibox-title{font-size:16px;font-weight:500;color:#1a1a1a;margin-bottom:4px}
+.ibox-sub{font-size:13px;color:#666;line-height:1.6;margin-bottom:18px}
+.mic{width:76px;height:76px;border-radius:50%;background:#185FA5;border:none;cursor:pointer;display:flex;align-items:center;justify-content:center;margin:0 auto 12px;transition:background 0.2s}
+.mic:hover{background:#0C447C}
+.mic.rec{background:#E24B4A}
+.mic-lbl{font-size:13px;color:#888;text-align:center;margin-bottom:14px}
+.transcript{background:#f7f7f7;border-radius:8px;padding:14px 16px;font-size:13px;color:#555;line-height:1.7;margin-bottom:14px;display:none;border-left:3px solid #185FA5}
+.btn-full{background:#185FA5;color:#fff;border:none;padding:14px 20px;border-radius:8px;font-size:14px;font-weight:500;cursor:pointer;font-family:'DM Sans',sans-serif;width:100%;display:none;transition:background 0.2s}
+.btn-full:hover{background:#0C447C}
+.btn-full.show{display:block}
+textarea{width:100%;font-family:'DM Sans',sans-serif;font-size:13px;border:1px solid #eee;border-radius:8px;padding:12px;background:#fff;color:#1a1a1a;resize:vertical;margin-bottom:12px;line-height:1.6}
+textarea:focus{outline:none;border-color:#185FA5}
+.btn-go{background:#185FA5;color:#fff;border:none;padding:14px 20px;border-radius:8px;font-size:14px;font-weight:500;cursor:pointer;font-family:'DM Sans',sans-serif;width:100%;transition:background 0.2s}
+.btn-go:hover{background:#0C447C}
+.paste-note{background:#EEEDFE;border:0.5px solid #AFA9EC;border-radius:8px;padding:11px 15px;font-size:12px;color:#3C3489;margin-bottom:14px;line-height:1.6}
+
+/* Steps */
+.steps{display:grid;grid-template-columns:repeat(4,1fr);gap:1rem}
+.step{background:#fff;border:1px solid #eee;border-radius:12px;padding:1.5rem;text-align:center}
+.step-n{width:38px;height:38px;border-radius:50%;background:#E6F1FB;color:#0C447C;font-size:14px;font-weight:500;display:flex;align-items:center;justify-content:center;margin:0 auto 12px}
+.step-t{font-size:14px;font-weight:500;color:#1a1a1a;margin-bottom:6px}
+.step-d{font-size:12px;color:#888;line-height:1.6}
+
+/* Templates */
+.cat-tabs{display:flex;gap:8px;flex-wrap:wrap;justify-content:center;margin-bottom:1.5rem}
+.cat-tab{font-size:12px;padding:7px 16px;border-radius:20px;border:1px solid #ddd;background:none;cursor:pointer;font-family:'DM Sans',sans-serif;color:#666;transition:all 0.15s}
+.cat-tab:hover{border-color:#aaa}
+.cat-tab.active{background:#185FA5;color:#fff;border-color:#185FA5}
+.tpl-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:12px}
+.tpl{background:#fff;border:1px solid #eee;border-radius:12px;overflow:hidden;cursor:pointer;transition:border-color 0.15s}
+.tpl:hover{border-color:#aaa}
+.tpl-preview{height:120px;padding:14px;display:flex;flex-direction:column;gap:3px}
+.tpl-foot{padding:9px 12px;border-top:0.5px solid #eee}
+.tpl-name{font-size:12px;font-weight:500;color:#1a1a1a}
+.tpl-cat{font-size:10px;color:#888}
+
+/* Tools */
+.tools{display:grid;grid-template-columns:1fr 1fr;gap:1rem}
+.tool{background:#fff;border:1px solid #eee;border-radius:12px;padding:1.25rem;display:flex;gap:14px}
+.ti{width:40px;height:40px;border-radius:10px;display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.tt{font-size:14px;font-weight:500;color:#1a1a1a;margin-bottom:4px}
+.td{font-size:12px;color:#888;line-height:1.6;margin-bottom:6px}
+.tpill{font-size:10px;padding:2px 9px;border-radius:10px;display:inline-block}
+
+/* Stories */
+.stories{display:grid;grid-template-columns:repeat(3,1fr);gap:1rem}
+.sc{background:#fff;border:1px solid #eee;border-radius:12px;padding:1.5rem}
+.sq{font-size:13px;color:#555;line-height:1.75;font-style:italic;margin-bottom:14px}
+.sp{display:flex;align-items:center;gap:10px}
+.sa{width:36px;height:36px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:500;flex-shrink:0}
+.s-name{font-size:13px;font-weight:500;color:#1a1a1a}
+.s-role{font-size:11px;color:#888}
+
+/* Pricing */
+.pricing{display:grid;grid-template-columns:1fr 1fr;gap:1rem;max-width:660px;margin:0 auto}
+.pc{background:#fff;border:1px solid #eee;border-radius:12px;padding:1.75rem}
+.pc.feat{border:2px solid #185FA5}
+.pn{font-size:13px;font-weight:500;color:#888;margin-bottom:6px}
+.pa{font-family:'DM Serif Display',serif;font-size:36px;font-weight:400;color:#1a1a1a}
+.pp{font-size:12px;color:#888;margin-bottom:18px}
+.pf{font-size:13px;color:#555;padding:7px 0;border-bottom:0.5px solid #eee;display:flex;align-items:center;gap:10px}
+.pf:last-of-type{border:none}
+.cd{width:16px;height:16px;border-radius:50%;background:#E6F1FB;border:2px solid #185FA5;flex-shrink:0}
+.xd{width:16px;height:16px;border-radius:50%;background:#f5f5f5;flex-shrink:0}
+
+/* Footer */
+footer{text-align:center;padding:2.5rem 0;font-size:12px;color:#aaa;border-top:0.5px solid #eee;margin-top:2rem}
+.footer-links{display:flex;justify-content:center;gap:24px;margin-bottom:8px}
+.footer-links span{cursor:pointer}
+.footer-links span:hover{color:#555}
+
+/* Responsive */
+@media(max-width:700px){
+  .hero,.ways,.steps,.stories,.tools,.pricing,.cta-grid,.stats{grid-template-columns:1fr}
+  .hero-right{display:none}
+  nav{padding:1rem}
+  .page{padding:0 1rem}
+  .hero h1{font-size:32px}
+}
+</style>
+</head>
+<body>
+
+<div class="mission-bar">
+  <span>Built for the people who work the hardest and get overlooked the most.</span>
+</div>
+
+<div style="max-width:1100px;margin:0 auto">
+<nav>
+  <div class="logo">Voice<b>My</b>Resume</div>
+  <div class="nav-links">
+    <button class="nav-link" onclick="scrollToSection('how')">How it works</button>
+    <button class="nav-link" onclick="scrollToSection('templates')">Templates</button>
+    <button class="nav-link" onclick="scrollToSection('tools')">Tools</button>
+    <button class="nav-link" onclick="scrollToSection('pricing')">Pricing</button>
+    <button class="nav-cta" onclick="window.location.href='app.html'">Start free — no sign up</button>
+  </div>
+</nav>
+</div>
+
+<div class="page">
+
+<div class="hero">
+  <div>
+    <div class="hero-badge">No hidden fees. No bait-and-switch. Ever.</div>
+    <h1>You know the job.<br><em>We help you</em><br><em>say it right.</em></h1>
+    <p>Speak, type, or paste your old resume. Our AI turns your real experience into a professional resume that competes with anyone — no writing skills needed.</p>
+    <div class="cta-grid">
+      <button class="cta-a" onclick="window.location.href='app.html'">🎤 &nbsp;Start from scratch<br><span style="font-size:11px;opacity:0.85;font-weight:400">Just talk or type</span></button>
+      <button class="cta-b" onclick="window.location.href='app.html?mode=paste'">📋 &nbsp;Improve my resume<br><span style="font-size:11px;color:#888">Paste your old one</span></button>
+    </div>
+    <button class="cta-c" onclick="window.location.href='app.html'">🎤 &nbsp;Just speak — we'll write it for you</button>
+    <div class="trust"><span class="trust-dot"></span>Free to start &nbsp;·&nbsp; No credit card &nbsp;·&nbsp; PDF download always free</div>
+  </div>
+  <div class="hero-right">
+    <div style="font-size:11px;color:#aaa;text-align:center;margin-bottom:8px">Your resume — live as you build it</div>
+    <div class="resume-card">
+      <div class="rc-accent" style="background:#185FA5"></div>
+      <div class="rc-name">Marcus Johnson</div>
+      <div class="rc-contact">marcus@email.com &nbsp;·&nbsp; San Jose, CA &nbsp;·&nbsp; linkedin.com/in/marcus</div>
+      <div class="rc-sec" style="color:#185FA5">Professional summary</div>
+      <div class="rc-bar" style="background:#185FA5;width:90%;opacity:0.4"></div>
+      <div class="rc-bar" style="background:#185FA5;width:75%;opacity:0.3;margin-bottom:10px"></div>
+      <div class="rc-sec" style="color:#185FA5">Experience</div>
+      <div style="font-size:10px;font-weight:500;color:#1a1a1a;margin-bottom:3px">Logistics Team Lead · Amazon · 2020–Present</div>
+      <div class="rc-bar" style="background:#378ADD;width:90%;opacity:0.3"></div>
+      <div class="rc-bar" style="background:#378ADD;width:68%;opacity:0.25;margin-bottom:8px"></div>
+      <div style="font-size:10px;font-weight:500;color:#1a1a1a;margin-bottom:3px">Warehouse Associate · Walmart · 2017–2020</div>
+      <div class="rc-bar" style="background:#378ADD;width:85%;opacity:0.3"></div>
+      <div class="rc-bar" style="background:#378ADD;width:60%;opacity:0.25;margin-bottom:10px"></div>
+      <div class="rc-sec" style="color:#185FA5">Skills</div>
+      <div style="display:flex;flex-wrap:wrap;gap:4px;margin-bottom:10px">
+        <span style="font-size:9px;background:#E6F1FB;color:#0C447C;padding:2px 8px;border-radius:10px">Team leadership</span>
+        <span style="font-size:9px;background:#E6F1FB;color:#0C447C;padding:2px 8px;border-radius:10px">Inventory management</span>
+        <span style="font-size:9px;background:#E6F1FB;color:#0C447C;padding:2px 8px;border-radius:10px">Staff training</span>
+        <span style="font-size:9px;background:#E6F1FB;color:#0C447C;padding:2px 8px;border-radius:10px">Safety compliance</span>
+      </div>
+      <div class="ai-badge">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#534AB7" stroke-width="2" style="flex-shrink:0;margin-top:1px"><circle cx="12" cy="12" r="10"/><path d="M12 8v4l3 3"/></svg>
+        <div style="font-size:10px;color:#3C3489;line-height:1.5">AI rewrote "loaded trucks" → "Managed daily inbound and outbound logistics operations for a high-volume distribution center"</div>
+      </div>
+    </div>
+    <div class="preview-mini">
+      <div class="preview-stat"><div class="preview-stat-n">94%</div><div class="preview-stat-l">ATS match score</div></div>
+      <div class="preview-stat" style="background:#EAF3DE"><div class="preview-stat-n" style="color:#3B6D11">Ready</div><div class="preview-stat-l" style="color:#3B6D11">To download free</div></div>
+    </div>
+  </div>
+</div>
+
+<div class="honest">
+  <div class="honest-dot"></div>
+  <div>
+    <div style="font-size:14px;font-weight:500;color:#27500A;margin-bottom:3px">We are 100% upfront. No bait-and-switch. Ever.</div>
+    <div style="font-size:13px;color:#3B6D11;line-height:1.6">PDF download is free. Always. We hate sites that make you build your whole resume then charge you to download it. We will never do that to you.</div>
+  </div>
+</div>
+
+<div class="stats">
+  <div class="stat"><div class="stat-n">75%</div><div class="stat-l">Of resumes never reach a human — ours do</div></div>
+  <div class="stat"><div class="stat-n">3 min</div><div class="stat-l">From blank page to finished resume</div></div>
+  <div class="stat"><div class="stat-n">$4.99</div><div class="stat-l">Less than a coffee a month — cancel anytime</div></div>
+</div>
+
+<div class="divider"></div>
+
+<div class="sec-label" id="start">Get started your way</div>
+<div class="sec-title">Three ways to build your resume</div>
+<div class="sec-sub">Pick whichever feels easiest. All three lead to the same result — a professional resume ready to download.</div>
+
+<div class="ways">
+  <div class="way sel" id="w-speak" onclick="selWay('speak')">
+    <div class="way-icon" style="background:#E6F1FB">
+      <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#185FA5" stroke-width="2"><path d="M12 1a3 3 0 0 0-3 3v8a3 3 0 0 0 6 0V4a3 3 0 0 0-3-3z"/><path d="M19 10v2a7 7 0 0 1-14 0v-2"/><line x1="12" y1="19" x2="12" y2="23"/><line x1="8" y1="23" x2="16" y2="23"/></svg>
+    </div>
+    <div class="way-title">Speak it</div>
+    <div class="way-desc">Just talk about your jobs like you're talking to a friend. We write it professionally. No typing needed.</div>
+    <span class="way-pill" style="background:#E6F1FB;color:#0C447C;border:0.5px solid #85B7EB">Easiest — recommended</span>
+  </div>
+  <div class="way" id="w-type" onclick="selWay('type')">
+    <div class="way-icon" style="background:#EAF3DE">
+      <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#3B6D11" stroke-width="2"><rect x="2" y="4" width="20" height="16" rx="2"/><path d="M8 10h8M8 14h4"/></svg>
+    </div>
+    <div class="way-title">Type it</div>
+    <div class="way-desc">Write about your experience in plain everyday words. No need to sound fancy or formal at all.</div>
+    <span class="way-pill" style="background:#EAF3DE;color:#27500A;border:0.5px solid #97C459">Simple and quick</span>
+  </div>
+  <div class="way" id="w-paste" onclick="selWay('paste')">
+    <div class="way-icon" style="background:#EEEDFE">
+      <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#534AB7" stroke-width="2"><path d="M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2"/><rect x="8" y="2" width="8" height="4" rx="1"/></svg>
+    </div>
+    <div class="way-title">Paste old resume</div>
+    <div class="way-desc">Already have a resume — even a rough old one? Paste it in. We clean it up and make it shine.</div>
+    <span class="way-pill" style="background:#EEEDFE;color:#3C3489;border:0.5px solid #AFA9EC">Already have one?</span>
+  </div>
+</div>
+
+<div class="ibox" id="ib-speak">
+  <div class="ibox-title">Tell us about your work experience</div>
+  <div class="ibox-sub">Press the mic and just start talking. Say something like: "I worked at Walmart for 3 years as a cashier. I also trained new employees and helped run the customer service desk."</div>
+  <div style="text-align:center">
+    <button class="mic" id="mic-btn" onclick="toggleMic()">
+      <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2"><path d="M12 1a3 3 0 0 0-3 3v8a3 3 0 0 0 6 0V4a3 3 0 0 0-3-3z"/><path d="M19 10v2a7 7 0 0 1-14 0v-2"/><line x1="12" y1="19" x2="12" y2="23"/><line x1="8" y1="23" x2="16" y2="23"/></svg>
+    </button>
+    <div class="mic-lbl" id="mic-lbl">Tap the mic and start talking — we're listening</div>
+  </div>
+  <div class="transcript" id="transcript">"I worked at Amazon for 3 years loading and organizing shipments. After 6 months they made me team lead because I never missed a day and I trained 4 new people. Before that I worked at Walmart for 2 years in the electronics section."</div>
+  <button class="btn-full" id="speak-go">Build my professional resume →</button>
+</div>
+
+<div class="ibox" id="ib-type" style="display:none">
+  <div class="ibox-title">Tell us about your experience in your own words</div>
+  <div class="ibox-sub">Write it like you're texting a friend. Don't worry about grammar or sounding professional — we handle that part for you.</div>
+  <textarea rows="5" placeholder="For example: I worked at Target for 4 years in electronics. I helped customers find what they needed, kept shelves stocked, and trained 2 new people when they started. Before that I worked at McDonald's for a year..."></textarea>
+  <button class="btn-go">Build my professional resume →</button>
+</div>
+
+<div class="ibox" id="ib-paste" style="display:none">
+  <div class="ibox-title">Paste your old resume here</div>
+  <div class="ibox-sub">Copy everything from your old resume and paste it below — even if it's outdated, messy, or just a basic list of jobs. We'll modernize it, make it sound great, and tailor it to the job you want.</div>
+  <div class="paste-note">Already have a resume? Perfect — we never waste your work. We take what you have and make it even better.</div>
+  <textarea rows="7" placeholder="Paste your existing resume here...&#10;&#10;Example:&#10;John Smith · john@email.com · 555-0000&#10;&#10;Walmart — Cashier · 2019–2023&#10;- Ran register&#10;- Helped customers&#10;- Stocked shelves&#10;&#10;McDonald's — Crew Member · 2018–2019"></textarea>
+  <button class="btn-go">Upgrade my resume with AI →</button>
+</div>
+
+<div class="divider"></div>
+
+<div class="sec-label" id="how">How it works</div>
+<div class="sec-title">Four simple steps. That's it.</div>
+<div class="sec-sub">No confusing menus. No tech skills needed. Just follow the steps — we do the hard part.</div>
+<div class="steps">
+  <div class="step"><div class="step-n">1</div><div class="step-t">Speak, type or paste</div><div class="step-d">Tell us about your experience your way. Talk it, type it, or paste your old resume — all three work perfectly.</div></div>
+  <div class="step"><div class="step-n">2</div><div class="step-t">Paste the job you want</div><div class="step-d">Copy the job description from Indeed or LinkedIn. AI tailors your resume to match that specific job perfectly.</div></div>
+  <div class="step"><div class="step-n">3</div><div class="step-t">Review and edit</div><div class="step-d">Look over what we created. Make any changes you want. You're always in control — it's your resume.</div></div>
+  <div class="step"><div class="step-n">4</div><div class="step-t">Download and apply</div><div class="step-d">Download as PDF or Word — both free. Send it off and use our interview coach to prepare for the call.</div></div>
+</div>
+
+<div class="divider"></div>
+
+<div class="sec-label" id="templates">Templates by job type</div>
+<div class="sec-title">Professional resumes for real jobs</div>
+<div class="sec-sub">Every template is ATS-friendly and professionally designed. Pick by the kind of work you do.</div>
+<div class="cat-tabs">
+  <button class="cat-tab active" onclick="setCat(this,'all')">All templates</button>
+  <button class="cat-tab" onclick="setCat(this,'warehouse')">Warehouse & logistics</button>
+  <button class="cat-tab" onclick="setCat(this,'health')">Healthcare</button>
+  <button class="cat-tab" onclick="setCat(this,'retail')">Retail & service</button>
+  <button class="cat-tab" onclick="setCat(this,'office')">Office & admin</button>
+  <button class="cat-tab" onclick="setCat(this,'trade')">Trades & construction</button>
+</div>
+<div class="tpl-grid" id="tpl-grid"></div>
+
+<div class="divider"></div>
+
+<div class="sec-label" id="tools">Your tools</div>
+<div class="sec-title">More than just a resume builder</div>
+<div class="sec-sub">We're your personal job coach — from the first word on your resume to the moment you get the call.</div>
+<div class="tools">
+  <div class="tool"><div class="ti" style="background:#E6F1FB"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#185FA5" stroke-width="2"><path d="M12 1a3 3 0 0 0-3 3v8a3 3 0 0 0 6 0V4a3 3 0 0 0-3-3z"/><path d="M19 10v2a7 7 0 0 1-14 0v-2"/><line x1="12" y1="19" x2="12" y2="23"/><line x1="8" y1="23" x2="16" y2="23"/></svg></div><div><div class="tt">Voice resume builder</div><div class="td">Just talk. AI writes it professionally and makes it sound like you — not a robot.</div><span class="tpill" style="background:#E6F1FB;color:#0C447C">Free</span></div></div>
+  <div class="tool"><div class="ti" style="background:#EAF3DE"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#3B6D11" stroke-width="2"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg></div><div><div class="tt">Job description matcher</div><div class="td">Paste any job posting — we instantly tailor your resume to match and boost your ATS score.</div><span class="tpill" style="background:#EAF3DE;color:#27500A">Free</span></div></div>
+  <div class="tool"><div class="ti" style="background:#EEEDFE"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#534AB7" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg></div><div><div class="tt">Cover letter generator</div><div class="td">One click. A cover letter that matches your resume and the job — same voice, same style.</div><span class="tpill" style="background:#EEEDFE;color:#3C3489">Pro</span></div></div>
+  <div class="tool"><div class="ti" style="background:#FAEEDA"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#854F0B" stroke-width="2"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/></svg></div><div><div class="tt">Interview prep & confidence coach</div><div class="td">Practice real questions, get a personal pep talk, and walk into your interview feeling ready.</div><span class="tpill" style="background:#FAEEDA;color:#633806">Pro</span></div></div>
+  <div class="tool"><div class="ti" style="background:#E1F5EE"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#0F6E56" stroke-width="2"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg></div><div><div class="tt">Resume match score</div><div class="td">See exactly how well your resume fits the job before you apply — and how to improve it fast.</div><span class="tpill" style="background:#E1F5EE;color:#085041">Free</span></div></div>
+  <div class="tool"><div class="ti" style="background:#FAECE7"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#993C1D" stroke-width="2"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg></div><div><div class="tt">Skills discoverer</div><div class="td">Describe your day at work — we find skills you didn't know you had and add them professionally.</div><span class="tpill" style="background:#FAECE7;color:#712B13">Pro</span></div></div>
+</div>
+
+<div class="divider"></div>
+
+<div class="sec-label">Real people. Real results.</div>
+<div class="sec-title">They had the skills. We found the words.</div>
+<div class="sec-sub">VoiceMyResume was built for the people who have always deserved a fair shot at the job they want.</div>
+<div class="stories">
+  <div class="sc"><div class="sq">"I worked at the same warehouse for 6 years but never knew how to write it down properly. VoiceMyResume made me sound like a professional. Got 3 callbacks in one week."</div><div class="sp"><div class="sa" style="background:#E6F1FB;color:#0C447C">MJ</div><div><div class="s-name">Marcus J.</div><div class="s-role">Warehouse → Logistics supervisor</div></div></div></div>
+  <div class="sc"><div class="sq">"I was out of work for 5 years raising my kids. I pasted my old rough resume and the AI completely transformed it. Explained my gap honestly. I have a job now."</div><div class="sp"><div class="sa" style="background:#E1F5EE;color:#085041">TL</div><div><div class="s-name">Tanya L.</div><div class="s-role">Stay-at-home mom → Office admin</div></div></div></div>
+  <div class="sc"><div class="sq">"English is my second language. Writing a resume felt impossible. I just talked and the app did everything. My resume looked better than anything I could have written."</div><div class="sp"><div class="sa" style="background:#EEEDFE;color:#3C3489">RM</div><div><div class="s-name">Rosa M.</div><div class="s-role">Restaurant worker → Healthcare aide</div></div></div></div>
+</div>
+
+<div class="divider"></div>
+
+<div class="sec-label" id="pricing">Pricing</div>
+<div class="sec-title">Simple. Honest. No surprises.</div>
+<div class="sec-sub">Two plans. No tricks. No hidden fees. Cancel anytime — we mean it.</div>
+<div class="pricing">
+  <div class="pc">
+    <div class="pn">Free — always</div>
+    <div class="pa">$0</div>
+    <div class="pp">No credit card. No time limit.</div>
+    <div class="pf"><div class="cd"></div>Speak, type or paste resume builder</div>
+    <div class="pf"><div class="cd"></div>AI writing — sounds human, not robotic</div>
+    <div class="pf"><div class="cd"></div>Job description matcher</div>
+    <div class="pf"><div class="cd"></div>Resume match score</div>
+    <div class="pf"><div class="cd"></div>PDF download — free forever</div>
+    <div class="pf"><div class="xd"></div><span style="color:#bbb">Cover letter generator</span></div>
+    <div class="pf"><div class="xd"></div><span style="color:#bbb">Interview prep coach</span></div>
+    <div class="pf"><div class="xd"></div><span style="color:#bbb">10+ Pro templates</span></div>
+    <button class="btn-go" style="margin-top:18px;background:none;border:1px solid #ddd;color:#1a1a1a" onclick="window.location.href='app.html'">Start free — no sign up needed</button>
+  </div>
+  <div class="pc feat">
+    <div style="display:flex;justify-content:space-between;align-items:center">
+      <div class="pn" style="color:#185FA5">Pro</div>
+      <span style="font-size:10px;background:#E6F1FB;color:#0C447C;padding:3px 10px;border-radius:20px;border:0.5px solid #85B7EB">Most popular</span>
+    </div>
+    <div class="pa">$4.99</div>
+    <div class="pp">Per month · 7-day free trial · cancel anytime</div>
+    <div class="pf"><div class="cd"></div>Everything in Free</div>
+    <div class="pf"><div class="cd"></div>Cover letter matching your resume</div>
+    <div class="pf"><div class="cd"></div>Interview prep & confidence coach</div>
+    <div class="pf"><div class="cd"></div>10+ Pro resume templates</div>
+    <div class="pf"><div class="cd"></div>10+ matching cover letter templates</div>
+    <div class="pf"><div class="cd"></div>Skills discoverer</div>
+    <div class="pf"><div class="cd"></div>PDF & Word download</div>
+    <button class="btn-go" style="margin-top:18px" onclick="window.location.href='app.html'">Start 7-day free trial</button>
+    <div style="text-align:center;font-size:11px;color:#aaa;margin-top:8px">No credit card needed to try</div>
+  </div>
+</div>
+
+<div class="divider"></div>
+
+<div style="text-align:center;padding:2rem 0">
+  <div class="sec-title">Ready to get that job?</div>
+  <div class="sec-sub">You have the skills. You've done the work.<br>Now let us help the world see it on paper.</div>
+  <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;max-width:400px;margin:0 auto 14px">
+    <button class="cta-a" onclick="window.location.href='app.html'">Start from scratch</button>
+    <button class="cta-b" onclick="window.location.href='app.html?mode=paste'">Improve my resume</button>
+  </div>
+  <div class="trust" style="justify-content:center"><span class="trust-dot"></span>No sign-up &nbsp;·&nbsp; 3 minutes &nbsp;·&nbsp; Download free</div>
+</div>
+
+<footer>
+  <div class="footer-links">
+    <a href="privacy.html" style="color:#aaa;text-decoration:none">Privacy Policy</a>
+    <a href="terms.html" style="color:#aaa;text-decoration:none">Terms of Service</a>
+    <a href="mailto:support@voicemyresume.com" style="color:#aaa;text-decoration:none">Contact</a>
+    <a href="app.html" style="color:#aaa;text-decoration:none">Start Free</a>
+  </div>
+  <div style="margin-top:6px;font-style:italic">"Built for the people who work the hardest and get overlooked the most."</div>
+  <div style="margin-top:4px">© 2026 VoiceMyResume.com — All rights reserved</div>
+</footer>
+
+</div>
+
+<script>
+var templates=[
+  {name:'Executive',cat:'warehouse',accent:'#185FA5',bg:'#E6F1FB',line:'#378ADD'},
+  {name:'Team leader',cat:'warehouse',accent:'#0F6E56',bg:'#E1F5EE',line:'#1D9E75'},
+  {name:'First shift',cat:'warehouse',accent:'#993C1D',bg:'#FAECE7',line:'#D85A30'},
+  {name:'Caregiver',cat:'health',accent:'#993556',bg:'#FBEAF0',line:'#D4537E'},
+  {name:'Clinic pro',cat:'health',accent:'#185FA5',bg:'#E6F1FB',line:'#85B7EB'},
+  {name:'Prestige',cat:'office',accent:'#3B6D11',bg:'#EAF3DE',line:'#639922'},
+  {name:'Meridian',cat:'office',accent:'#534AB7',bg:'#EEEDFE',line:'#7F77DD'},
+  {name:'Clean slate',cat:'retail',accent:'#5F5E5A',bg:'#F1EFE8',line:'#888780'},
+  {name:'Storefronts',cat:'retail',accent:'#0F6E56',bg:'#E1F5EE',line:'#5DCAA5'},
+  {name:'Tradecraft',cat:'trade',accent:'#854F0B',bg:'#FAEEDA',line:'#BA7517'},
+  {name:'Blueprint',cat:'trade',accent:'#185FA5',bg:'#E6F1FB',line:'#378ADD'},
+  {name:'Amber',cat:'office',accent:'#854F0B',bg:'#FAEEDA',line:'#EF9F27'},
+];
+var cats={all:templates,warehouse:[],health:[],retail:[],office:[],trade:[]};
+Object.keys(cats).forEach(function(k){if(k!=='all')cats[k]=templates.filter(function(t){return t.cat===k})});
+
+function setCat(el,cat){
+  document.querySelectorAll('.cat-tab').forEach(function(b){b.classList.remove('active')});
+  el.classList.add('active');
+  renderTpls(cat);
+}
+function renderTpls(cat){
+  cat=cat||'all';
+  var g=document.getElementById('tpl-grid');
+  g.innerHTML=cats[cat].map(function(t){
+    return '<div class="tpl"><div class="tpl-preview" style="background:'+t.bg+'">'+
+      '<div style="height:8px;background:'+t.accent+';border-radius:2px;margin-bottom:8px"></div>'+
+      '<div style="height:5px;background:'+t.line+';border-radius:2px;width:55%;margin-bottom:3px;opacity:0.55"></div>'+
+      '<div style="height:3px;background:'+t.line+';border-radius:2px;width:88%;margin-bottom:2px;opacity:0.3"></div>'+
+      '<div style="height:3px;background:'+t.line+';border-radius:2px;width:72%;margin-bottom:8px;opacity:0.3"></div>'+
+      '<div style="height:4px;background:'+t.accent+';border-radius:2px;width:38%;margin-bottom:3px;opacity:0.5"></div>'+
+      '<div style="height:3px;background:'+t.line+';border-radius:2px;width:85%;margin-bottom:2px;opacity:0.25"></div>'+
+      '<div style="height:3px;background:'+t.line+';border-radius:2px;width:68%;opacity:0.25"></div>'+
+      '</div><div class="tpl-foot"><div class="tpl-name">'+t.name+'</div><div class="tpl-cat">'+t.cat.charAt(0).toUpperCase()+t.cat.slice(1)+'</div></div></div>';
+  }).join('');
+}
+
+function selWay(w){
+  ['speak','type','paste'].forEach(function(x){
+    document.getElementById('w-'+x).classList.remove('sel');
+    document.getElementById('ib-'+x).style.display='none';
+  });
+  document.getElementById('w-'+w).classList.add('sel');
+  document.getElementById('ib-'+w).style.display='block';
+}
+
+function scrollToSection(id){
+  var el=document.getElementById(id);
+  if(el) el.scrollIntoView({behavior:'smooth'});
+}
+
+var recording=false;
+function toggleMic(){
+  recording=!recording;
+  var btn=document.getElementById('mic-btn');
+  var lbl=document.getElementById('mic-lbl');
+  var tr=document.getElementById('transcript');
+  var go=document.getElementById('speak-go');
+  if(recording){
+    btn.classList.add('rec');
+    lbl.textContent='Listening... talk about your work experience';
+    setTimeout(function(){
+      recording=false;
+      btn.classList.remove('rec');
+      lbl.textContent='Got it! Here is what we heard:';
+      tr.style.display='block';
+      go.classList.add('show');
+    },3000);
+  } else {
+    btn.classList.remove('rec');
+    lbl.textContent='Tap the mic and start talking — we\'re listening';
+    tr.style.display='none';
+    go.classList.remove('show');
+  }
+}
+
+renderTpls('all');
+</script>
+</body>
+</html>
